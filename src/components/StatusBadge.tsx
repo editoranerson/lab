@@ -11,7 +11,7 @@ const tone: Record<string, string> = {
 export function StatusBadge({ status, implemented }: { status: string; implemented?: boolean }) {
   return (
     <span className="inline-flex flex-wrap gap-1">
-      <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${tone[status] ?? tone.em_avaliacao}`}>{STATUS_LABEL[status] ?? status}</span>
+      <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${tone[status] ?? tone["em_avaliacao"]}`}>{STATUS_LABEL[status] ?? status}</span>
       {implemented && <span className="rounded-full bg-gradient-brand px-2.5 py-0.5 text-xs font-bold text-primary-foreground">Entrou na história ✦</span>}
     </span>
   );

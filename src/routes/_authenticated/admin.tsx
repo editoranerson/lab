@@ -136,8 +136,8 @@ function SubmissionRow({ s, judges, onChange }: { s: Sub; judges: Judge[]; onCha
       if (!e || (e.score === "" && e.points === "")) continue;
       const score = e.score === "" ? null : Number(e.score);
       const points = e.points === "" ? null : Math.round(Number(e.points));
-      if (score != null && (isNaN(score) || score < 0 || score > 10)) return toast.error(`Nota de ${j.name} deve ser 0–10`);
-      if (points != null && (isNaN(points) || points < 0 || points > 100)) return toast.error(`Pontos de ${j.name} devem ser 0–100`);
+      if (score != null && (isNaN(score) || score < 0 || score > 10)) { toast.error(`Nota de ${j.name} deve ser 0–10`); return; }
+      if (points != null && (isNaN(points) || points < 0 || points > 100)) { toast.error(`Pontos de ${j.name} devem ser 0–100`); return; }
       rows.push({ submission_id: s.id, judge_id: j.id, editorial_score: score, progress_points: points, updated_at: new Date().toISOString() });
     }
     const { error } = await supabase.from("evaluations").upsert(rows, { onConflict: "submission_id,judge_id" });
@@ -248,7 +248,7 @@ function JudgesAdmin() {
   const add = async () => {
     if (!n.name.trim()) return;
     const { error } = await supabase.from("judges").insert({ ...n, name: n.name.trim().slice(0, 80), sort_order: data.length + 1 });
-    if (error) return toast.error("Erro");
+    if (error) { toast.error("Erro"); return; }
     setN({ name: "", kind: "ia", description: "" });
     refresh();
   };
@@ -291,10 +291,10 @@ function ShowcaseAdmin() {
   const [n, setN] = useState({ name: "", creator: "", synopsis: "", image_url: "" });
 
   const add = async () => {
-    if (!n.name.trim() || !n.creator.trim() || !n.synopsis.trim()) return toast.error("Preencha nome, criador(a) e sinopse");
-    if (n.image_url && !/^https:\/\//.test(n.image_url)) return toast.error("A imagem precisa ser um link https");
+    if (!n.name.trim() || !n.creator.trim() || !n.synopsis.trim()) { toast.error("Preencha nome, criador(a) e sinopse"); return; }
+    if (n.image_url && !/^https:\/\//.test(n.image_url)) { toast.error("A imagem precisa ser um link https"); return; }
     const { error } = await supabase.from("showcase").insert({ ...n, image_url: n.image_url || null, sort_order: data.length + 1 });
-    if (error) return toast.error("Erro");
+    if (error) { toast.error("Erro"); return; }
     setN({ name: "", creator: "", synopsis: "", image_url: "" });
     refresh();
   };

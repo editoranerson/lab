@@ -14,8 +14,8 @@ export const STAGES: Stage[] = [
 export function getProgress(points: number) {
   const p = Math.max(0, Math.floor(points || 0));
   let idx = 0;
-  for (let i = 0; i < STAGES.length; i++) if (p >= STAGES[i].min) idx = i;
-  const current = STAGES[idx];
+  for (let i = 0; i < STAGES.length; i++) if (p >= STAGES[i]!.min) idx = i;
+  const current = STAGES[idx]!;
   const next = STAGES[idx + 1] ?? null;
   const remaining = next ? next.min - p : 0;
   const pct = next ? Math.round(((p - current.min) / (next.min - current.min)) * 100) : 100;

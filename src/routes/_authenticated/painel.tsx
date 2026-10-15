@@ -146,7 +146,7 @@ function AccountForm() {
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!uid) return;
-    if (v.phone && !/^\d{10,11}$/.test(v.phone.replace(/\D/g, ""))) return toast.error("Telefone com DDD inválido");
+    if (v.phone && !/^\d{10,11}$/.test(v.phone.replace(/\D/g, ""))) { toast.error("Telefone com DDD inválido"); return; }
     const { error } = await supabase
       .from("profiles")
       .upsert({ id: uid, display_name: v.display_name.slice(0, 80), full_name: v.full_name.slice(0, 120), phone: v.phone.replace(/\D/g, "") || null });

@@ -49,13 +49,13 @@ export function Wizard({ kind, steps }: { kind: "personagem" | "trama"; steps: S
 
   if (done) return <AccessResult protocol={done.protocol} accessKey={done.key} linked={done.linked} />;
 
-  const step = all[i];
+  const step = all[i]!;
   const last = i === all.length - 1;
   const set = (k: string, val: string) => setV((p) => ({ ...p, [k]: val }));
 
   const next = () => {
     const missing = step.fields.find((f) => !f.optional && !(v[f.name] ?? "").trim());
-    if (missing) return toast.error(`Preencha: ${missing.label}`);
+    if (missing) { toast.error(`Preencha: ${missing.label}`); return; }
     setI(i + 1);
   };
 
@@ -63,17 +63,17 @@ export function Wizard({ kind, steps }: { kind: "personagem" | "trama"; steps: S
     const dataKeys = steps.flatMap((s) => s.fields.map((f) => f.name));
     const payload = {
       kind,
-      full_name: v.full_name ?? "",
-      phone: v.phone ?? "",
-      ai_prompt: v.ai_prompt ?? "",
+      full_name: v["full_name"] ?? "",
+      phone: v["phone"] ?? "",
+      ai_prompt: v["ai_prompt"] ?? "",
       adult,
       terms,
       data: Object.fromEntries(dataKeys.map((k) => [k, v[k] ?? ""])),
     };
     const parsed = submissionInput.safeParse(payload);
     if (!parsed.success) {
-      const issue = parsed.error.issues[0];
-      return toast.error(`${issue.path.at(-1) ? String(issue.path.at(-1)) + ": " : ""}${issue.message}`);
+      const issue = parsed.error.issues[0]!;
+      { toast.error(`${issue.path.at(-1) ? String(issue.path.at(-1)) + ": " : ""}${issue.message}`); return; }
     }
     setBusy(true);
     try {
