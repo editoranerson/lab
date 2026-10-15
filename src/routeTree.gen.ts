@@ -16,6 +16,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CriarPersonagemRouteImport } from './routes/criar-personagem'
 import { Route as DiretrizesRouteImport } from './routes/diretrizes'
 import { Route as SugerirTramaRouteImport } from './routes/sugerir-trama'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedPainelRouteImport } from './routes/_authenticated/painel'
 
 const IndexRoute = IndexRouteImport.update({
@@ -52,6 +53,11 @@ const SugerirTramaRoute = SugerirTramaRouteImport.update({
   path: '/sugerir-trama',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedPainelRoute = AuthenticatedPainelRouteImport.update({
   id: '/painel',
   path: '/painel',
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/criar-personagem': typeof CriarPersonagemRoute
   '/diretrizes': typeof DiretrizesRoute
   '/sugerir-trama': typeof SugerirTramaRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/painel': typeof AuthenticatedPainelRoute
 }
 export interface FileRoutesByTo {
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/criar-personagem': typeof CriarPersonagemRoute
   '/diretrizes': typeof DiretrizesRoute
   '/sugerir-trama': typeof SugerirTramaRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/painel': typeof AuthenticatedPainelRoute
 }
 export interface FileRoutesById {
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/criar-personagem': typeof CriarPersonagemRoute
   '/diretrizes': typeof DiretrizesRoute
   '/sugerir-trama': typeof SugerirTramaRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/painel': typeof AuthenticatedPainelRoute
 }
 export interface FileRouteTypes {
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
     | '/criar-personagem'
     | '/diretrizes'
     | '/sugerir-trama'
+    | '/admin'
     | '/painel'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -105,6 +115,7 @@ export interface FileRouteTypes {
     | '/criar-personagem'
     | '/diretrizes'
     | '/sugerir-trama'
+    | '/admin'
     | '/painel'
   id:
     | '__root__'
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
     | '/criar-personagem'
     | '/diretrizes'
     | '/sugerir-trama'
+    | '/_authenticated/admin'
     | '/_authenticated/painel'
   fileRoutesById: FileRoutesById
 }
@@ -179,6 +191,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SugerirTramaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/painel': {
       id: '/_authenticated/painel'
       path: '/painel'
@@ -190,10 +209,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedPainelRoute: typeof AuthenticatedPainelRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedPainelRoute: AuthenticatedPainelRoute,
 }
 
