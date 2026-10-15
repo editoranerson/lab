@@ -10,19 +10,31 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AcompanharRouteImport } from './routes/acompanhar'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CriarPersonagemRouteImport } from './routes/criar-personagem'
 import { Route as DiretrizesRouteImport } from './routes/diretrizes'
 import { Route as SugerirTramaRouteImport } from './routes/sugerir-trama'
+import { Route as AuthenticatedPainelRouteImport } from './routes/_authenticated/painel'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AcompanharRoute = AcompanharRouteImport.update({
   id: '/acompanhar',
   path: '/acompanhar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CriarPersonagemRoute = CriarPersonagemRouteImport.update({
@@ -40,48 +52,77 @@ const SugerirTramaRoute = SugerirTramaRouteImport.update({
   path: '/sugerir-trama',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedPainelRoute = AuthenticatedPainelRouteImport.update({
+  id: '/painel',
+  path: '/painel',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/acompanhar': typeof AcompanharRoute
+  '/auth': typeof AuthRoute
   '/criar-personagem': typeof CriarPersonagemRoute
   '/diretrizes': typeof DiretrizesRoute
   '/sugerir-trama': typeof SugerirTramaRoute
+  '/painel': typeof AuthenticatedPainelRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/acompanhar': typeof AcompanharRoute
+  '/auth': typeof AuthRoute
   '/criar-personagem': typeof CriarPersonagemRoute
   '/diretrizes': typeof DiretrizesRoute
   '/sugerir-trama': typeof SugerirTramaRoute
+  '/painel': typeof AuthenticatedPainelRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/acompanhar': typeof AcompanharRoute
+  '/auth': typeof AuthRoute
   '/criar-personagem': typeof CriarPersonagemRoute
   '/diretrizes': typeof DiretrizesRoute
   '/sugerir-trama': typeof SugerirTramaRoute
+  '/_authenticated/painel': typeof AuthenticatedPainelRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/acompanhar' | '/criar-personagem' | '/diretrizes' | '/sugerir-trama'
-  fileRoutesByTo: FileRoutesByTo
-  to:
-    '/' | '/acompanhar' | '/criar-personagem' | '/diretrizes' | '/sugerir-trama'
-  id:
-    | '__root__'
     | '/'
     | '/acompanhar'
+    | '/auth'
     | '/criar-personagem'
     | '/diretrizes'
     | '/sugerir-trama'
+    | '/painel'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/acompanhar'
+    | '/auth'
+    | '/criar-personagem'
+    | '/diretrizes'
+    | '/sugerir-trama'
+    | '/painel'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/acompanhar'
+    | '/auth'
+    | '/criar-personagem'
+    | '/diretrizes'
+    | '/sugerir-trama'
+    | '/_authenticated/painel'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AcompanharRoute: typeof AcompanharRoute
+  AuthRoute: typeof AuthRoute
   CriarPersonagemRoute: typeof CriarPersonagemRoute
   DiretrizesRoute: typeof DiretrizesRoute
   SugerirTramaRoute: typeof SugerirTramaRoute
@@ -96,11 +137,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/acompanhar': {
       id: '/acompanhar'
       path: '/acompanhar'
       fullPath: '/acompanhar'
       preLoaderRoute: typeof AcompanharRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/criar-personagem': {
@@ -124,12 +179,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SugerirTramaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/painel': {
+      id: '/_authenticated/painel'
+      path: '/painel'
+      fullPath: '/painel'
+      preLoaderRoute: typeof AuthenticatedPainelRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedPainelRoute: typeof AuthenticatedPainelRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedPainelRoute: AuthenticatedPainelRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AcompanharRoute: AcompanharRoute,
+  AuthRoute: AuthRoute,
   CriarPersonagemRoute: CriarPersonagemRoute,
   DiretrizesRoute: DiretrizesRoute,
   SugerirTramaRoute: SugerirTramaRoute,
