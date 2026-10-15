@@ -10,33 +10,81 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AcompanharRouteImport } from './routes/acompanhar'
+import { Route as CriarPersonagemRouteImport } from './routes/criar-personagem'
+import { Route as DiretrizesRouteImport } from './routes/diretrizes'
+import { Route as SugerirTramaRouteImport } from './routes/sugerir-trama'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AcompanharRoute = AcompanharRouteImport.update({
+  id: '/acompanhar',
+  path: '/acompanhar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CriarPersonagemRoute = CriarPersonagemRouteImport.update({
+  id: '/criar-personagem',
+  path: '/criar-personagem',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiretrizesRoute = DiretrizesRouteImport.update({
+  id: '/diretrizes',
+  path: '/diretrizes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SugerirTramaRoute = SugerirTramaRouteImport.update({
+  id: '/sugerir-trama',
+  path: '/sugerir-trama',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/acompanhar': typeof AcompanharRoute
+  '/criar-personagem': typeof CriarPersonagemRoute
+  '/diretrizes': typeof DiretrizesRoute
+  '/sugerir-trama': typeof SugerirTramaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/acompanhar': typeof AcompanharRoute
+  '/criar-personagem': typeof CriarPersonagemRoute
+  '/diretrizes': typeof DiretrizesRoute
+  '/sugerir-trama': typeof SugerirTramaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/acompanhar': typeof AcompanharRoute
+  '/criar-personagem': typeof CriarPersonagemRoute
+  '/diretrizes': typeof DiretrizesRoute
+  '/sugerir-trama': typeof SugerirTramaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    '/' | '/acompanhar' | '/criar-personagem' | '/diretrizes' | '/sugerir-trama'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    '/' | '/acompanhar' | '/criar-personagem' | '/diretrizes' | '/sugerir-trama'
+  id:
+    | '__root__'
+    | '/'
+    | '/acompanhar'
+    | '/criar-personagem'
+    | '/diretrizes'
+    | '/sugerir-trama'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AcompanharRoute: typeof AcompanharRoute
+  CriarPersonagemRoute: typeof CriarPersonagemRoute
+  DiretrizesRoute: typeof DiretrizesRoute
+  SugerirTramaRoute: typeof SugerirTramaRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +96,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/acompanhar': {
+      id: '/acompanhar'
+      path: '/acompanhar'
+      fullPath: '/acompanhar'
+      preLoaderRoute: typeof AcompanharRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/criar-personagem': {
+      id: '/criar-personagem'
+      path: '/criar-personagem'
+      fullPath: '/criar-personagem'
+      preLoaderRoute: typeof CriarPersonagemRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/diretrizes': {
+      id: '/diretrizes'
+      path: '/diretrizes'
+      fullPath: '/diretrizes'
+      preLoaderRoute: typeof DiretrizesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sugerir-trama': {
+      id: '/sugerir-trama'
+      path: '/sugerir-trama'
+      fullPath: '/sugerir-trama'
+      preLoaderRoute: typeof SugerirTramaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AcompanharRoute: AcompanharRoute,
+  CriarPersonagemRoute: CriarPersonagemRoute,
+  DiretrizesRoute: DiretrizesRoute,
+  SugerirTramaRoute: SugerirTramaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
