@@ -14,16 +14,278 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      evaluations: {
+        Row: {
+          editorial_score: number | null
+          id: string
+          judge_id: string
+          progress_points: number | null
+          submission_id: string
+          updated_at: string
+        }
+        Insert: {
+          editorial_score?: number | null
+          id?: string
+          judge_id: string
+          progress_points?: number | null
+          submission_id: string
+          updated_at?: string
+        }
+        Update: {
+          editorial_score?: number | null
+          id?: string
+          judge_id?: string
+          progress_points?: number | null
+          submission_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evaluations_judge_id_fkey"
+            columns: ["judge_id"]
+            isOneToOne: false
+            referencedRelation: "judges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evaluations_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      guidelines: {
+        Row: {
+          content: string
+          id: number
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          id?: number
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          id?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      judges: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string | null
+          id: string
+          kind: Database["public"]["Enums"]["judge_kind"]
+          name: string
+          sort_order: number
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          kind: Database["public"]["Enums"]["judge_kind"]
+          name: string
+          sort_order?: number
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          kind?: Database["public"]["Enums"]["judge_kind"]
+          name?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          kind: string
+          message: string
+          read: boolean
+          submission_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind?: string
+          message: string
+          read?: boolean
+          submission_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: string
+          message?: string
+          read?: boolean
+          submission_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          full_name: string | null
+          id: string
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      showcase: {
+        Row: {
+          created_at: string
+          creator: string
+          id: string
+          image_url: string | null
+          name: string
+          sort_order: number
+          synopsis: string
+        }
+        Insert: {
+          created_at?: string
+          creator: string
+          id?: string
+          image_url?: string | null
+          name: string
+          sort_order?: number
+          synopsis: string
+        }
+        Update: {
+          created_at?: string
+          creator?: string
+          id?: string
+          image_url?: string | null
+          name?: string
+          sort_order?: number
+          synopsis?: string
+        }
+        Relationships: []
+      }
+      submissions: {
+        Row: {
+          ai_prompt: string | null
+          created_at: string
+          data: Json
+          full_name: string
+          id: string
+          incorporation: Database["public"]["Enums"]["incorporation_status"]
+          key_hash: string
+          kind: Database["public"]["Enums"]["submission_kind"]
+          phone: string
+          protocol: string
+          status: Database["public"]["Enums"]["participant_status"]
+          title: string
+          user_id: string | null
+        }
+        Insert: {
+          ai_prompt?: string | null
+          created_at?: string
+          data?: Json
+          full_name: string
+          id?: string
+          incorporation?: Database["public"]["Enums"]["incorporation_status"]
+          key_hash: string
+          kind: Database["public"]["Enums"]["submission_kind"]
+          phone: string
+          protocol: string
+          status?: Database["public"]["Enums"]["participant_status"]
+          title: string
+          user_id?: string | null
+        }
+        Update: {
+          ai_prompt?: string | null
+          created_at?: string
+          data?: Json
+          full_name?: string
+          id?: string
+          incorporation?: Database["public"]["Enums"]["incorporation_status"]
+          key_hash?: string
+          kind?: Database["public"]["Enums"]["submission_kind"]
+          phone?: string
+          protocol?: string
+          status?: Database["public"]["Enums"]["participant_status"]
+          title?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
+      incorporation_status: "nenhum" | "rascunho" | "implementado"
+      judge_kind: "ia" | "humano"
+      participant_status:
+        | "em_avaliacao"
+        | "pre_selecionado"
+        | "aprovado"
+        | "reprovado"
+        | "desclassificado"
+      submission_kind: "personagem" | "trama"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +412,18 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+      incorporation_status: ["nenhum", "rascunho", "implementado"],
+      judge_kind: ["ia", "humano"],
+      participant_status: [
+        "em_avaliacao",
+        "pre_selecionado",
+        "aprovado",
+        "reprovado",
+        "desclassificado",
+      ],
+      submission_kind: ["personagem", "trama"],
+    },
   },
 } as const
