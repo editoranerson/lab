@@ -64,26 +64,26 @@ function Page() {
       2: [["name", "Nome do personagem"], ["gender", "Gênero"]],
     };
     const miss = (req[i] ?? []).find(([k]) => !v[k].trim());
-    if (miss) return toast.error(`Preencha: ${miss[1]}`);
+    if (miss) { toast.error(`Preencha: ${miss[1]}`); return; }
     if (i === 3) {
-      if (!mode) return toast.error("Escolha se quer descrever a aparência");
-      if (mode === "texto" && !v.appearance.trim()) return toast.error("Descreva a aparência");
-      if (mode === "foto" && !photo) return toast.error("Envie a foto");
+      if (!mode) { toast.error("Escolha se quer descrever a aparência"); return; }
+      if (mode === "texto" && !v.appearance.trim()) { toast.error("Descreva a aparência"); return; }
+      if (mode === "foto" && !photo) { toast.error("Envie a foto"); return; }
     }
     setI(i + 1);
   };
 
   const onFile = (f?: File) => {
     if (!f) return;
-    if (!["image/jpeg", "image/png", "image/webp"].includes(f.type)) return toast.error("Use JPG, PNG ou WEBP");
-    if (f.size > MAX_PHOTO_BYTES) return toast.error("Foto acima de 5 MB");
+    if (!["image/jpeg", "image/png", "image/webp"].includes(f.type)) { toast.error("Use JPG, PNG ou WEBP"); return; }
+    if (f.size > MAX_PHOTO_BYTES) { toast.error("Foto acima de 5 MB"); return; }
     const r = new FileReader();
     r.onload = () => setPhoto(String(r.result));
     r.readAsDataURL(f);
   };
 
   const send = async () => {
-    if (mode === "foto" && !photoTerms) return toast.error("Aceite o termo de uso de imagem");
+    if (mode === "foto" && !photoTerms) { toast.error("Aceite o termo de uso de imagem"); return; }
     const parsed = submissionInput.safeParse({
       kind: "espelho",
       full_name: v.full_name,
@@ -101,7 +101,7 @@ function Page() {
       },
       photo: mode === "foto" ? (photo ?? undefined) : undefined,
     });
-    if (!parsed.success) return toast.error(parsed.error.issues[0]!.message);
+    if (!parsed.success) { toast.error(parsed.error.issues[0]!.message); return; }
     setBusy(true);
     try {
       setDone(await submit({ data: parsed.data }));
