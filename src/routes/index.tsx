@@ -108,8 +108,7 @@ function Home() {
           </div>
         )}
       </section>
-    </div>
-    {/* Banner Fixo de Anunciante */}
+
       <section className="mt-16 text-center">
         <span className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
           Apoio Cultural
@@ -130,5 +129,6 @@ function Home() {
           </a>
         </div>
       </section>
+    </div>
   );
 }
