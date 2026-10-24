@@ -14,6 +14,24 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Laboratório Criativo de Querido Dante" },
       { property: "og:description", content: "Leitores e mentes criativas cocriando o universo de Querido Dante." },
     ],
+    scripts: [
+      {
+        children: `/* Pixel Dante - Rastreamento Direto */
+fetch('https://kpplssyiehosifuejobr.supabase.co/functions/v1/affiliate-track/visit', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwcGxzc3lpZWhvc2lmdWVqb2JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3OTAwOTUsImV4cCI6MjEwMTM2NjA5NX0.lFhMcypc7raL_LiBMdYsxbKPgK29tso0sDwwg-MOaVc',
+    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwcGxzc3lpZWhvc2lmdWVqb2JyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3OTAwOTUsImV4cCI6MjEwMTM2NjA5NX0.lFhMcypc7raL_LiBMdYsxbKPgK29tso0sDwwg-MOaVc'
+  },
+  body: JSON.stringify({
+    code: 'VSSD',
+    ipHash: 'sub_' + window.location.hostname,
+    session: 'sess_' + Date.now()
+  })
+}).catch(() => {});`,
+      },
+    ],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(homeQuery),
   component: Home,
