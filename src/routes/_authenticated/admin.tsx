@@ -50,12 +50,16 @@ function Admin() {
         <TabsList className="glass flex h-auto flex-wrap rounded-2xl">
           <TabsTrigger value="personagem">Personagens</TabsTrigger>
           <TabsTrigger value="trama">Tramas</TabsTrigger>
+          <TabsTrigger value="espelho">Eu como personagem</TabsTrigger>
+          <TabsTrigger value="prompt-espelho">Prompt do espelho</TabsTrigger>
           <TabsTrigger value="banca">Banca</TabsTrigger>
           <TabsTrigger value="vitrine">Vitrine</TabsTrigger>
           <TabsTrigger value="diretrizes">Diretrizes</TabsTrigger>
         </TabsList>
         <TabsContent value="personagem"><Submissions kind="personagem" /></TabsContent>
         <TabsContent value="trama"><Submissions kind="trama" /></TabsContent>
+        <TabsContent value="espelho"><Submissions kind="espelho" /></TabsContent>
+        <TabsContent value="prompt-espelho"><MirrorPromptAdmin /></TabsContent>
         <TabsContent value="banca"><JudgesAdmin /></TabsContent>
         <TabsContent value="vitrine"><ShowcaseAdmin /></TabsContent>
         <TabsContent value="diretrizes"><GuidelinesAdmin /></TabsContent>
@@ -71,7 +75,7 @@ function useJudges() {
   });
 }
 
-function Submissions({ kind }: { kind: "personagem" | "trama" }) {
+function Submissions({ kind }: { kind: "personagem" | "trama" | "espelho" }) {
   const [status, setStatus] = useState<string>("todos");
   const [sort, setSort] = useState<"date" | "avg">("date");
   const { data: judges = [] } = useJudges();
@@ -178,8 +182,9 @@ function SubmissionRow({ s, judges, onChange }: { s: Sub; judges: Judge[]; onCha
               <p>{s.phone}</p>
               <p className="text-xs text-muted-foreground">{s.user_id ? "Associada a uma conta" : "Enviada como visitante"}</p>
             </div>
+            {typeof data["photo_path"] === "string" && <MirrorPhoto path={data["photo_path"]} />}
             {Object.entries(data).map(([k, v]) =>
-              v ? (
+              v && k !== "photo_path" ? (
                 <p key={k}>
                   <b>{FIELD_LABELS[k] ?? k}:</b> <span className="whitespace-pre-wrap">{String(v)}</span>
                 </p>
@@ -345,6 +350,45 @@ function GuidelinesAdmin() {
       <p className="text-sm text-muted-foreground">Edite em Markdown. O conteúdo aparece em /diretrizes.</p>
       <Textarea rows={24} value={value} onChange={(e) => setText(e.target.value)} className="glass font-mono text-sm" />
       <Button onClick={save} className="rounded-full bg-gradient-brand"><Save className="h-4 w-4" /> Salvar diretrizes</Button>
+    </div>
+  );
+}
+
+function MirrorPhoto({ path }: { path: string }) {
+  const { data: url } = useQuery({
+    queryKey: ["mirror-photo", path],
+    queryFn: async () => (await supabase.storage.from("mirror-photos").createSignedUrl(path, 600)).data?.signedUrl ?? null,
+    staleTime: 5 * 60_000,
+  });
+  return (
+    <div className="rounded-xl bg-secondary p-3">
+      <p className="mb-2 text-xs font-bold uppercase text-muted-foreground">Foto de referência (restrita)</p>
+      {url ? (
+        <a href={url} target="_blank" rel="noreferrer"><img src={url} alt="Foto de referência" className="max-h-72 rounded-lg object-contain" /></a>
+      ) : (
+        <p className="text-xs text-muted-foreground">Carregando…</p>
+      )}
+    </div>
+  );
+}
+
+function MirrorPromptAdmin() {
+  const { data } = useQuery({
+    queryKey: ["admin-mirror-prompt"],
+    queryFn: async () => (await supabase.from("guidelines").select("mirror_prompt").eq("id", 1).maybeSingle()).data,
+  });
+  const [text, setText] = useState<string | null>(null);
+  const value = text ?? data?.mirror_prompt ?? "";
+  const save = async () => {
+    const { error } = await supabase.from("guidelines").update({ mirror_prompt: value }).eq("id", 1);
+    if (error) toast.error("Erro ao salvar");
+    else toast.success("Prompt do espelho salvo");
+  };
+  return (
+    <div className="mt-4 space-y-3">
+      <p className="text-sm text-muted-foreground">Texto que o participante copia e cola na IA que mais usa, em /eu-como-personagem.</p>
+      <Textarea rows={16} value={value} onChange={(e) => setText(e.target.value)} className="glass text-sm" />
+      <Button onClick={save} className="rounded-full bg-gradient-brand"><Save className="h-4 w-4" /> Salvar prompt</Button>
     </div>
   );
 }

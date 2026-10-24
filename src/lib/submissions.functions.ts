@@ -52,7 +52,21 @@ export const createSubmission = createServerFn({ method: "POST" })
     }
     const protocol = `QD-${randomString(8)}`;
     const key = randomString(24, ALPHA + "abcdefghijkmnpqrstuvwxyz");
-    const title = data.kind === "personagem" ? data.data.name : data.data.title;
+    const title = data.kind === "trama" ? data.data.title : data.data.name;
+    const record: Record<string, unknown> = { ...data.data };
+    if (data.kind === "espelho" && data.photo) {
+      const [head, b64] = data.photo.split(",");
+      const mime = head!.slice(5, head!.indexOf(";"));
+      const bytes = Uint8Array.from(atob(b64!), (c) => c.charCodeAt(0));
+      if (bytes.length > 5 * 1024 * 1024) throw new Error("Foto acima de 5 MB.");
+      const path = `${protocol}.${mime.split("/")[1]}`;
+      const up = await sb.storage.from("mirror-photos").upload(path, bytes, { contentType: mime });
+      if (up.error) {
+        console.error(up.error);
+        throw new Error("Não foi possível enviar a foto. Tente novamente.");
+      }
+      record["photo_path"] = path;
+    }
     const { error } = await sb.from("submissions").insert({
       protocol,
       key_hash: await sha256(key),
@@ -61,7 +75,7 @@ export const createSubmission = createServerFn({ method: "POST" })
       full_name: data.full_name,
       phone: data.phone.replace(/\D/g, ""),
       title,
-      data: data.data,
+      data: record as never,
       ai_prompt: data.ai_prompt || null,
     });
     if (error) {

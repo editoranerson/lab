@@ -30,3 +30,8 @@ export const getGuidelines = createServerFn({ method: "GET" }).handler(async () 
   const { data } = await publicClient().from("guidelines").select("content, updated_at").eq("id", 1).maybeSingle();
   return data ?? { content: "", updated_at: null };
 });
+
+export const getMirrorPrompt = createServerFn({ method: "GET" }).handler(async () => {
+  const { data } = await publicClient().from("guidelines").select("mirror_prompt").eq("id", 1).maybeSingle();
+  return { prompt: data?.mirror_prompt ?? "" };
+});

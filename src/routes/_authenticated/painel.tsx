@@ -1,3 +1,4 @@
+import { KIND_LABEL } from "@/lib/schemas";
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -69,7 +70,7 @@ function Painel() {
                     <p className="font-mono text-xs text-muted-foreground">{s.protocol}</p>
                     <p className="font-semibold">{s.title}</p>
                     <p className="text-xs text-muted-foreground">
-                      {s.kind === "personagem" ? "Personagem" : "Trama"} · {new Date(s.created_at).toLocaleDateString("pt-BR")} · {s.points} pts
+                      {KIND_LABEL[s.kind] ?? s.kind} · {new Date(s.created_at).toLocaleDateString("pt-BR")} · {s.points} pts
                     </p>
                   </div>
                   <StatusBadge status={s.status} implemented={s.implemented} />

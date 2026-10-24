@@ -1,3 +1,4 @@
+import { KIND_LABEL } from "@/lib/schemas";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
@@ -70,7 +71,7 @@ function Page() {
             <div>
               <p className="font-mono text-xs text-muted-foreground">{res.submission.protocol}</p>
               <h2 className="text-xl font-bold">{res.submission.title}</h2>
-              <p className="text-xs text-muted-foreground">{res.submission.kind === "personagem" ? "Personagem" : "Trama"}</p>
+              <p className="text-xs text-muted-foreground">{KIND_LABEL[res.submission.kind] ?? res.submission.kind}</p>
             </div>
             <StatusBadge status={res.submission.status} implemented={res.submission.implemented} />
           </div>
