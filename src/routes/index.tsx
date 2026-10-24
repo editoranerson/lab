@@ -109,5 +109,26 @@ function Home() {
         )}
       </section>
     </div>
+    {/* Banner Fixo de Anunciante */}
+      <section className="mt-16 text-center">
+        <span className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+          Apoio Cultural
+        </span>
+        <div className="mx-auto mt-3 max-w-4xl">
+          <a
+            href="https://instagram.com/vssd_design"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="glass lift group block overflow-hidden rounded-3xl border border-white/10 p-2 sm:p-3 transition-all duration-300 hover:border-pink/40 hover:shadow-glow"
+          >
+            <img
+              src="/IMG-20261005-WA2514.jpg"
+              alt="Publicidade Querido Dante"
+              loading="lazy"
+              className="w-full rounded-2xl object-cover transition-transform duration-300 group-hover:scale-[1.01]"
+            />
+          </a>
+        </div>
+      </section>
   );
 }
