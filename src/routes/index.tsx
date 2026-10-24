@@ -47,6 +47,11 @@ function Home() {
               <BookOpen className="h-4 w-4" /> Sugerir Trama
             </Link>
           </Button>
+          <Button asChild size="lg" variant="outline" className="lift glass rounded-full">
+            <Link to="/eu-como-personagem">
+              <Bot className="h-4 w-4" /> Eu como Personagem (IA)
+            </Link>
+          </Button>
           <Button asChild size="lg" variant="ghost" className="rounded-full">
             <Link to="/diretrizes">Ver Diretrizes</Link>
           </Button>

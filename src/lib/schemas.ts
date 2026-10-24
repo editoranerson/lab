@@ -43,10 +43,38 @@ export const plotData = z.object({
   description: s(6000, 30),
 });
 
-export const submissionInput = z.discriminatedUnion("kind", [
-  identificationSchema.extend({ kind: z.literal("personagem"), data: characterData }),
-  identificationSchema.extend({ kind: z.literal("trama"), data: plotData }),
-]);
+export const APPEARANCE_MODES = ["nenhuma", "texto", "foto"] as const;
+export const mirrorData = z.object({
+  ai_response: s(8000, 30),
+  name: s(80),
+  gender: s(80),
+  appearance_mode: z.enum(APPEARANCE_MODES),
+  appearance: opt(2000),
+  photo_note: opt(500),
+});
+
+const PHOTO_RE = /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/;
+export const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
+
+export const submissionInput = z
+  .discriminatedUnion("kind", [
+    identificationSchema.extend({ kind: z.literal("personagem"), data: characterData }),
+    identificationSchema.extend({ kind: z.literal("trama"), data: plotData }),
+    identificationSchema.extend({
+      kind: z.literal("espelho"),
+      data: mirrorData,
+      photo: z.string().max(7_200_000, "Foto acima de 5 MB").regex(PHOTO_RE, "Foto deve ser JPG, PNG ou WEBP").optional(),
+    }),
+  ])
+  .superRefine((v, ctx) => {
+    if (v.kind !== "espelho") return;
+    if (v.data.appearance_mode === "texto" && !v.data.appearance)
+      ctx.addIssue({ code: "custom", path: ["data", "appearance"], message: "Descreva a aparência" });
+    if (v.data.appearance_mode === "foto" && !v.photo)
+      ctx.addIssue({ code: "custom", path: ["photo"], message: "Envie a foto" });
+    if (v.data.appearance_mode !== "foto" && v.photo)
+      ctx.addIssue({ code: "custom", path: ["photo"], message: "Foto só no modo foto" });
+  });
 export type SubmissionInput = z.infer<typeof submissionInput>;
 
 export const accessSchema = z.object({
@@ -74,15 +102,21 @@ export const FIELD_LABELS: Record<string, string> = {
   scene_type: "Tipo de cena",
   characters: "Personagens envolvidos",
   description: "Descrição detalhada",
+  ai_response: "Resposta da IA (espelho)",
+  appearance_mode: "Aparência",
+  appearance: "Descrição da aparência",
+  photo_note: "Observação sobre a foto",
 };
+
+export const KIND_LABEL: Record<string, string> = { personagem: "Personagem", trama: "Trama", espelho: "Eu como personagem" };
 
 /** Text for AI judges: never includes name, phone or any personal data. */
 export function buildAiCopy(sub: { protocol: string; kind: string; data: Record<string, unknown>; ai_prompt?: string | null }) {
   const lines = [
-    `Proposta ${sub.protocol} — ${sub.kind === "personagem" ? "Personagem" : "Trama"} para "Querido Dante"`,
+    `Proposta ${sub.protocol} — ${KIND_LABEL[sub.kind] ?? sub.kind} para "Querido Dante"`,
     "",
     ...Object.entries(sub.data)
-      .filter(([, v]) => v !== "" && v != null)
+      .filter(([k, v]) => v !== "" && v != null && k !== "photo_path")
       .map(([k, v]) => `${FIELD_LABELS[k] ?? k}: ${String(v)}`),
   ];
   if (sub.ai_prompt) lines.push("", `Pedido do participante aos jurados de IA: ${sub.ai_prompt}`);

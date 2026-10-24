@@ -60,16 +60,19 @@ export type Database = {
         Row: {
           content: string
           id: number
+          mirror_prompt: string
           updated_at: string
         }
         Insert: {
           content: string
           id?: number
+          mirror_prompt?: string
           updated_at?: string
         }
         Update: {
           content?: string
           id?: number
+          mirror_prompt?: string
           updated_at?: string
         }
         Relationships: []
@@ -285,7 +288,7 @@ export type Database = {
         | "aprovado"
         | "reprovado"
         | "desclassificado"
-      submission_kind: "personagem" | "trama"
+      submission_kind: "personagem" | "trama" | "espelho"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -423,7 +426,7 @@ export const Constants = {
         "reprovado",
         "desclassificado",
       ],
-      submission_kind: ["personagem", "trama"],
+      submission_kind: ["personagem", "trama", "espelho"],
     },
   },
 } as const
